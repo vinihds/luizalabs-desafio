@@ -1,9 +1,9 @@
 package br.com.luizalabs.desafio.cep.service.impl;
 
-import br.com.luizalabs.desafio.cep.core.enums.StateDetail;
 import br.com.luizalabs.desafio.cep.core.client.ViaCepClient;
 import br.com.luizalabs.desafio.cep.core.dto.CepDTO;
 import br.com.luizalabs.desafio.cep.core.dto.ViaCepDTO;
+import br.com.luizalabs.desafio.cep.core.enums.StateDetail;
 import br.com.luizalabs.desafio.cep.service.CepService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
