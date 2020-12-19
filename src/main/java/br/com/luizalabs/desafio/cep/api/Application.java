@@ -1,13 +1,13 @@
-package br.com.luizalabs.desafio.cep;
+package br.com.luizalabs.desafio.cep.api;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class CepApplication {
+public class Application {
 
 	public static void main(String[] args) {
-		SpringApplication.run(CepApplication.class, args);
+		SpringApplication.run(Application.class, args);
 	}
 
 }

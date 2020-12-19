@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>br.com.luizalabs.desafio</groupId>
 	<artifactId>cep</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.1-SNAPSHOT</version>
 	<name>cep</name>
 	<description>Technical challenge for LuizaLabs</description>
 
