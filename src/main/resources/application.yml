@@ -5,3 +5,15 @@ spring:
 
 server:
   port: ${SERVER_PORT}
+
+logging:
+  level:
+    br.com.luizalabs.desafio.cep: ${LOGGING_LEVEL}
+
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+        loggerLevel: basic
