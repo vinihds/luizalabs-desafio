@@ -5,4 +5,5 @@ import br.com.luizalabs.desafio.cep.core.dto.CepDTO;
 public interface CepService {
 
     CepDTO findCep(String cep);
+
 }
