@@ -1,10 +1,10 @@
 package br.com.luizalabs.desafio.cep.service.impl;
 
-import br.com.luizalabs.desafio.cep.core.client.ViaCepClient;
 import br.com.luizalabs.desafio.cep.core.dto.CepDTO;
-import br.com.luizalabs.desafio.cep.core.dto.ViaCepDTO;
+import br.com.luizalabs.desafio.cep.core.entity.Cep;
 import br.com.luizalabs.desafio.cep.core.enums.StateDetail;
 import br.com.luizalabs.desafio.cep.core.exception.InvalidCepException;
+import br.com.luizalabs.desafio.cep.core.repository.CepRepository;
 import br.com.luizalabs.desafio.cep.service.CepService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -13,25 +13,31 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 
+import java.util.Optional;
+
 @Log4j2
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
 @Service
 public class CepServiceImpl implements CepService {
 
-    private final ViaCepClient viaCepClient;
+    private final CepRepository cepRepository;
 
     @Override
     public CepDTO findCep(String cep) {
         log.info("SERVICE -> Received CEP value: {}", cep);
 
-        try {
-            ViaCepDTO viaCepDTO = viaCepClient.findViaCepByCepValue(cep);
+        Cep cepEntity;
 
-            if (viaCepDTO.isErro()) {
-                viaCepDTO = findCepRetry(cep);
+        try {
+            Optional<Cep> cepOptional = cepRepository.findByIdWithLeftpad(cep);
+
+            if (cepOptional.isEmpty()) {
+                cepEntity = findCepRetry(cep);
+            } else {
+                cepEntity = cepOptional.get();
             }
 
-            return transformViaCepIntoCep(viaCepDTO);
+            return transformCepEntityIntoCepDTO(cepEntity);
         } catch (HttpClientErrorException | HttpServerErrorException ex) {
             log.error(ex.getResponseBodyAsString());
 
@@ -43,12 +49,12 @@ public class CepServiceImpl implements CepService {
         }
     }
 
-    private ViaCepDTO findCepRetry(String cep) throws InvalidCepException {
+    private Cep findCepRetry(String cep) throws InvalidCepException {
         char[] charArray = cep.toCharArray();
 
         int attempts = cep.length() - 1;
         String newCep;
-        ViaCepDTO viaCepDTO = null;
+        Optional<Cep> cepOptional = Optional.empty();
 
         while (attempts > 0) {
             for (int i = charArray.length - 1; i >= attempts; i--) {
@@ -56,28 +62,28 @@ public class CepServiceImpl implements CepService {
             }
 
             newCep = new String(charArray);
-            viaCepDTO = viaCepClient.findViaCepByCepValue(newCep);
+            cepOptional = cepRepository.findByIdWithLeftpad(newCep);
 
-            if (viaCepDTO != null && !viaCepDTO.isErro()) {
+            if (cepOptional.isPresent()) {
                 break;
             } else {
                 attempts--;
             }
         }
 
-        if (viaCepDTO != null && !viaCepDTO.isErro()) {
-            return viaCepDTO;
+        if (cepOptional.isPresent()) {
+            return cepOptional.get();
         } else {
             throw new InvalidCepException(cep);
         }
     }
 
-    private CepDTO transformViaCepIntoCep(ViaCepDTO viaCepDTO) {
+    private CepDTO transformCepEntityIntoCepDTO(Cep cepEntity) {
         return CepDTO.builder()
-                .bairro(viaCepDTO.getBairro())
-                .cidade(viaCepDTO.getLocalidade())
-                .estado(StateDetail.valueOf(viaCepDTO.getUf()).getName())
-                .rua(viaCepDTO.getLogradouro())
+                .bairro(cepEntity.getBairro())
+                .cidade(cepEntity.getCidade())
+                .estado(StateDetail.valueOf(cepEntity.getUf()).getName())
+                .rua(cepEntity.getLogradouro())
                 .build();
     }
 }

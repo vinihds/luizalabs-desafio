@@ -2,6 +2,20 @@
 spring:
   application:
     name: luizalabs-desafio-cep
+  datasource:
+    name: h2-cep
+    url: jdbc:h2:mem:cep_db
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    show-sql: true
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create
+  h2:
+    console:
+      enabled: true
 
 server:
   port: ${SERVER_PORT}
@@ -9,11 +23,3 @@ server:
 logging:
   level:
     br.com.luizalabs.desafio.cep: ${LOGGING_LEVEL}
-
-feign:
-  client:
-    config:
-      default:
-        connectTimeout: 5000
-        readTimeout: 5000
-        loggerLevel: basic
