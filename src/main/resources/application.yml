@@ -25,3 +25,9 @@ server:
 logging:
   level:
     br.com.luizalabs.desafio.cep: ${LOGGING_LEVEL}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
