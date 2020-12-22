@@ -9,6 +9,7 @@ import br.com.luizalabs.desafio.cep.service.CepService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.sleuth.annotation.NewSpan;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -24,16 +25,17 @@ public class CepServiceImpl implements CepService {
 
     @Override
     public CepDTO findCep(String cep) {
-        log.info("SERVICE -> Received CEP value: {}", cep);
-
         Cep cepEntity;
 
         try {
+            log.info("STEP -> Execute findByIdWithLeftpad (database ceps may have 7 digits)");
             Optional<Cep> cepOptional = cepRepository.findByIdWithLeftpad(cep);
 
             if (cepOptional.isEmpty()) {
                 cepEntity = findCepRetry(cep);
             } else {
+                log.info("STEP -> CEP exists! Return values");
+
                 cepEntity = cepOptional.get();
             }
 
@@ -49,7 +51,10 @@ public class CepServiceImpl implements CepService {
         }
     }
 
+    @NewSpan
     private Cep findCepRetry(String cep) throws InvalidCepException {
+        log.info("STEP -> CEP not exists! Begin retry");
+
         char[] charArray = cep.toCharArray();
 
         int attempts = cep.length() - 1;
@@ -57,6 +62,8 @@ public class CepServiceImpl implements CepService {
         Optional<Cep> cepOptional = Optional.empty();
 
         while (attempts > 0) {
+            log.info("STEP -> Execute zero rightpad validation. Remaining attempts: {} ", attempts);
+
             for (int i = charArray.length - 1; i >= attempts; i--) {
                 charArray[i] = "0".charAt(0);
             }
@@ -70,6 +77,8 @@ public class CepServiceImpl implements CepService {
                 attempts--;
             }
         }
+
+        log.info("STEP -> End of retry");
 
         if (cepOptional.isPresent()) {
             return cepOptional.get();

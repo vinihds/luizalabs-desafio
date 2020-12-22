@@ -31,7 +31,7 @@ public class CepController {
                    @Size(min = 8, max = 8, message = "CEP must have 8 digits")
                    @Pattern(regexp = "[0-9]+", message = "CEP must have only numbers")
                            String cep) {
-        log.info("CONTROLLER -> Received CEP value: {}", cep);
+        log.info("STEP -> Received CEP value: {}", cep);
 
         return cepService.findCep(cep);
     }
