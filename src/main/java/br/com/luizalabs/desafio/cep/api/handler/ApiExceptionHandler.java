@@ -5,6 +5,7 @@ import br.com.luizalabs.desafio.cep.core.exception.InvalidCepException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.client.HttpClientErrorException;
@@ -67,6 +68,30 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 .build());
 
         return new ResponseEntity<>(errorList, ex.getStatusCode());
+    }
+
+    @ExceptionHandler(value = AccessDeniedException.class)
+    protected ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException ex) {
+        log.error(ex);
+
+        List<ResponseErrorDTO> errorList = List.of(ResponseErrorDTO.builder()
+                .status(HttpStatus.UNAUTHORIZED.toString())
+                .message(ex.getMessage())
+                .build());
+
+        return new ResponseEntity<>(errorList, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(value = Exception.class)
+    protected ResponseEntity<Object> handleException(Exception ex) {
+        log.error(ex);
+
+        List<ResponseErrorDTO> errorList = List.of(ResponseErrorDTO.builder()
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.toString())
+                .message(ex.getMessage())
+                .build());
+
+        return new ResponseEntity<>(errorList, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 }

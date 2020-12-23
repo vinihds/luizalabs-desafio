@@ -20,15 +20,4 @@ public class ApiConstants {
         public static final String CEP_PARAM_URN = CEP_URL + CEP_PARAM_URL;
     }
 
-    public static class ViaCep {
-        private ViaCep() {
-        }
-
-        private static final String CEP_PARAM_URL = "/{cep}";
-        private static final String JSON_URL = "/json";
-
-        public static final String CEP_PARAM = "cep";
-        public static final String VIA_CEP_BASE_URL = "https://viacep.com.br/ws";
-        public static final String CEP_PARAM_URN = CEP_PARAM_URL + JSON_URL;
-    }
 }
