@@ -1,0 +1,80 @@
+swagger: "2.0"
+info:
+  description: "API desenvolvida a partir do desafio proposto pelo Magalu"
+  version: "1.0.1"
+  title: "Swagger-Magalu-Desafio"
+  contact:
+    email: "vhdsilveira10@gmail.com"
+host: "localhost:8080"
+basePath: "/api/v1"
+schemes:
+  - "http"
+tags:
+  - name: "CEP"
+    description: "Endpoint destinado a manipulação dos dados de CEP"
+
+securityDefinitions:
+  OAuth2:
+    type: "oauth2"
+    tokenUrl: "http://localhost:8080/oauth/token"
+    flow: "password"
+    scopes:
+      admin: "Tem acesso ao endpoint de CEP"
+      user: "Não tem acesso ao endpoint de CEP"
+security:
+  - OAuth2: [admin]
+paths:
+  "/cep/{cep}":
+    get:
+      tags:
+        - "CEP"
+      summary: "Busca as informações do CEP informado"
+      operationId: "findByCep"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "cep"
+          in: "path"
+          description: "CEP a ser utilizado na pesquisa"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/CepDTO"
+        "401":
+          description: "Unnauthorized"
+          schema:
+            $ref: "#/definitions/ResponseErrorDTO"
+        "404":
+          description: "Not found"
+          schema:
+            $ref: "#/definitions/ResponseErrorDTO"
+        "422":
+          description: "Unprocessable entity"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/ResponseErrorDTO"
+definitions:
+  ResponseErrorDTO:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+      message:
+        type: "string"
+  CepDTO:
+    type: "object"
+    properties:
+      rua:
+        type: "string"
+      bairro:
+        type: "string"
+      cidade:
+        type: "string"
+      estado:
+        type: "string"
