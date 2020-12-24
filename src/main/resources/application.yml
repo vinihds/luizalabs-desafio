@@ -33,11 +33,11 @@ logging:
   level:
     br.com.luizalabs.desafio.cep: ${LOGGING_LEVEL}
 
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: "*"
 
 security:
   oauth2:
@@ -45,3 +45,4 @@ security:
       scope: password
       client-id: ${OAUTH2_CLIENT_ID}
       client-secret: ${OAUTH2_CLIENT_SECRET}
+      access-token-validity-seconds: 1800

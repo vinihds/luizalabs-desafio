@@ -8,11 +8,10 @@ import br.com.luizalabs.desafio.cep.core.repository.CepRepository;
 import br.com.luizalabs.desafio.cep.service.CepService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.sleuth.annotation.NewSpan;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
 
 import java.util.Optional;
 
@@ -40,10 +39,6 @@ public class CepServiceImpl implements CepService {
             }
 
             return transformCepEntityIntoCepDTO(cepEntity);
-        } catch (HttpClientErrorException | HttpServerErrorException ex) {
-            log.error(ex.getResponseBodyAsString());
-
-            throw ex;
         } catch (InvalidCepException ex) {
             log.error(ex.getMessage());
 
@@ -52,23 +47,17 @@ public class CepServiceImpl implements CepService {
     }
 
     @NewSpan
-    private Cep findCepRetry(String cep) throws InvalidCepException {
+    private Cep findCepRetry(String cep) {
         log.info("STEP -> CEP not exists! Begin retry");
-
-        char[] charArray = cep.toCharArray();
 
         int attempts = cep.length() - 1;
         String newCep;
         Optional<Cep> cepOptional = Optional.empty();
 
-        while (attempts > 0) {
+        while (attempts >= 0) {
             log.info("STEP -> Execute zero rightpad validation. Remaining attempts: {} ", attempts);
 
-            for (int i = charArray.length - 1; i >= attempts; i--) {
-                charArray[i] = "0".charAt(0);
-            }
-
-            newCep = new String(charArray);
+            newCep = StringUtils.rightPad(cep.substring(0, attempts), 8, "0");
             cepOptional = cepRepository.findByIdWithLeftpad(newCep);
 
             if (cepOptional.isPresent()) {

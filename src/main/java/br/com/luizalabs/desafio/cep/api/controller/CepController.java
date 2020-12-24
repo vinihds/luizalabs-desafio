@@ -29,7 +29,7 @@ public class CepController {
     @GetMapping(value = ApiConstants.Cep.CEP_PARAM_URN,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    CepDTO findCep(@PathVariable(value = ApiConstants.Cep.CEP_PARAM)
+    public CepDTO findCep(@PathVariable(value = ApiConstants.Cep.CEP_PARAM)
                    @Size(min = 8, max = 8, message = "CEP inválido - CEP deve conter 8 digitos")
                    @Pattern(regexp = "[0-9]+", message = "CEP inválido - CEP deve conter somente números")
                            String cep) {

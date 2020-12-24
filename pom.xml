@@ -15,9 +15,17 @@
 	<description>Technical challenge for LuizaLabs</description>
 
 	<properties>
+		<sonar.exclusions>
+			br/com/luizalabs/desafio/cep/api/constant/**/*.java,
+			br/com/luizalabs/desafio/cep/api/handler/**/*.java,
+			br/com/luizalabs/desafio/cep/api/Application.java,
+			br/com/luizalabs/desafio/cep/core/**/*.java
+		</sonar.exclusions>
+
 		<java.version>11</java.version>
 		<spring-cloud-sleuth-zipkin.version>2.2.6.RELEASE</spring-cloud-sleuth-zipkin.version>
 		<spring-security-oauth2-autoconfigure.version>2.0.1.RELEASE</spring-security-oauth2-autoconfigure.version>
+		<commons-lang3.version>3.11</commons-lang3.version>
 	</properties>
 
 	<dependencies>
@@ -78,17 +86,16 @@
 			<artifactId>h2</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>${commons-lang3.version}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>org.junit.vintage</groupId>
-					<artifactId>junit-vintage-engine</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 	</dependencies>
 
