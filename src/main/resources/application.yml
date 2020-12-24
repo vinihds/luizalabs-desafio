@@ -33,11 +33,22 @@ logging:
   level:
     br.com.luizalabs.desafio.cep: ${LOGGING_LEVEL}
 
-#management:
-#  endpoints:
-#    web:
-#      exposure:
-#        include: "*"
+management:
+  endpoint:
+    metrics:
+      enabled: true
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: health, metrics
+
+endpoints:
+  health:
+    sensitive: false
+  beans:
+    sensitive: false
 
 security:
   oauth2:
