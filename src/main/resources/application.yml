@@ -1,0 +1,59 @@
+
+spring:
+  application:
+    name: luizalabs-desafio-cep
+  sleuth:
+    sampler:
+      percentage: 1.0
+  datasource:
+    name: h2-cep
+    url: ${H2_CONNECTION_URL}
+    driverClassName: org.h2.Driver
+    username: ${H2_USERNAME}
+    password: ${H2_PASSWORD}
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create
+  h2:
+    console:
+      enabled: true
+  cache:
+    type: redis
+    redis:
+      time-to-live: ${REDIS_CACHE_EXPIRATION_TIME}
+  redis:
+    host: ${REDIS_HOST}
+    port: ${REDIS_PORT}
+
+server:
+  port: ${SERVER_PORT}
+
+logging:
+  level:
+    br.com.luizalabs.desafio.cep: ${LOGGING_LEVEL}
+
+management:
+  endpoint:
+    metrics:
+      enabled: true
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: health, metrics
+
+endpoints:
+  health:
+    sensitive: false
+  beans:
+    sensitive: false
+
+security:
+  oauth2:
+    client:
+      scope: password
+      client-id: ${OAUTH2_CLIENT_ID}
+      client-secret: ${OAUTH2_CLIENT_SECRET}
+      access-token-validity-seconds: ${OAUTH2_TOKEN_EXPIRATION_TIME}
