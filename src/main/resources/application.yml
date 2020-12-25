@@ -21,7 +21,7 @@ spring:
   cache:
     type: redis
     redis:
-      time-to-live: 30000
+      time-to-live: ${REDIS_CACHE_EXPIRATION_TIME}
   redis:
     host: ${REDIS_HOST}
     port: ${REDIS_PORT}
@@ -56,4 +56,4 @@ security:
       scope: password
       client-id: ${OAUTH2_CLIENT_ID}
       client-secret: ${OAUTH2_CLIENT_SECRET}
-      access-token-validity-seconds: 1800
+      access-token-validity-seconds: ${OAUTH2_TOKEN_EXPIRATION_TIME}

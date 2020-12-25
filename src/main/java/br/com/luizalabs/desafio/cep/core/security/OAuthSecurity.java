@@ -10,8 +10,9 @@ public class OAuthSecurity extends ResourceServerConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/actuator/**").permitAll()
-                .anyRequest().authenticated();
+                .antMatchers("/cep/**").authenticated()
+                .anyRequest().permitAll();
 
+        http.headers().frameOptions().disable();
     }
 }
